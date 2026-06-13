@@ -5,6 +5,7 @@ import PageShell from '@/components/PageShell';
 import SearchBar from '@/components/SearchBar';
 import Categories from '@/components/Categories';
 import PropertyCard from '@/components/PropertyCard';
+import BannerAd from '@/components/BannerAd';
 import { getProperties } from '@/services/properties';
 import { getAgencies } from '@/services/agencies';
 import type { Property, Agency } from '@/services/types';
@@ -75,6 +76,10 @@ const AppLayout: React.FC = () => {
 
       <Categories />
 
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <BannerAd position="home_horizontal" />
+      </div>
+
       {/* Recent */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex items-end justify-between mb-8">
@@ -90,6 +95,10 @@ const AppLayout: React.FC = () => {
           {recent.map((p) => <PropertyCard key={p.id} property={p} />)}
         </div>
       </section>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-2">
+        <BannerAd position="home_compact" />
+      </div>
 
       {/* Agencies */}
       <section className="bg-white dark:bg-slate-900 py-16 mt-8">

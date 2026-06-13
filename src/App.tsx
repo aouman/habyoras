@@ -23,6 +23,7 @@ import AdminUsersPage from "./pages/AdminUsersPage";
 import AdminPropertiesPage from "./pages/AdminPropertiesPage";
 import AdminSubscriptionsPage from "./pages/AdminSubscriptionsPage";
 import AdminNotificationsPage from "./pages/AdminNotificationsPage";
+import AdminBannersPage from "./pages/AdminBannersPage";
 import AdminSettingsPage from "./pages/AdminSettingsPage";
 import AdminLoginPage from "./pages/AdminLoginPage";
 import ContactPage from "./pages/ContactPage";
@@ -70,6 +71,7 @@ const App = () => (
               <Route path="/admin/abonnements" element={<AdminRoute><AdminSubscriptionsPage /></AdminRoute>} />
               <Route path="/admin/notifications" element={<AdminRoute><AdminNotificationsPage /></AdminRoute>} />
               <Route path="/admin/parametres" element={<AdminRoute><AdminSettingsPage /></AdminRoute>} />
+              <Route path="/admin/bannieres" element={<AdminRoute><AdminBannersPage /></AdminRoute>} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>

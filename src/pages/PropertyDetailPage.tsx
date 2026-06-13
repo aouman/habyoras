@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { MapPin, BedDouble, Bath, Maximize, Car, Phone, MessageCircle, Star, Share2, Heart, ArrowLeft, CheckCircle2, Send, Building, ChevronRight } from 'lucide-react';
 import PageShell from '@/components/PageShell';
+import BannerAd from '@/components/BannerAd';
 import PropertyCard from '@/components/PropertyCard';
 import { getProperty, getProperties } from '@/services/properties';
 import { sendMessage } from '@/services/messages';
@@ -237,6 +238,10 @@ const PropertyDetailPage: React.FC = () => {
               <a href={`tel:+225${agencyInfo?.phone_call || '0700000000'}`} className="flex items-center justify-center gap-2 w-full py-3 rounded-xl bg-slate-900 dark:bg-slate-700 hover:bg-slate-800 text-white font-semibold transition-colors">
                 <Phone className="w-5 h-5" /> Appeler l'agence
               </a>
+
+              <div className="mt-5 pt-4 border-t border-slate-100 dark:border-slate-700">
+                <BannerAd position="detail_sidebar" />
+              </div>
             </div>
           </div>
         </div>

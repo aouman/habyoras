@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\MessageController;
 use App\Http\Controllers\Api\PaymentController;
 use App\Http\Controllers\Api\AdminController;
 use App\Http\Controllers\Api\CollaboratorController;
+use App\Http\Controllers\Api\BannerController;
 
 // === Public routes ===
 Route::get('properties', [PropertyController::class, 'index']);
@@ -16,6 +17,8 @@ Route::get('properties/{id}', [PropertyController::class, 'show']);
 Route::get('agencies', [AgencyController::class, 'index']);
 Route::get('agencies/{id}', [AgencyController::class, 'show']);
 Route::get('notifications', [\App\Http\Controllers\Api\NotificationController::class, 'index']);
+
+Route::get('banners', [BannerController::class, 'index']);
 
 Route::post('auth/agency/register', [AuthController::class, 'registerAgency']);
 Route::post('auth/agency/login', [AuthController::class, 'loginAgency']);
@@ -78,4 +81,9 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
     Route::post('admin/notifications', [\App\Http\Controllers\Api\NotificationController::class, 'store']);
     Route::put('admin/notifications/{id}', [\App\Http\Controllers\Api\NotificationController::class, 'update']);
     Route::delete('admin/notifications/{id}', [\App\Http\Controllers\Api\NotificationController::class, 'destroy']);
+
+    Route::get('admin/banners', [BannerController::class, 'adminIndex']);
+    Route::post('admin/banners', [BannerController::class, 'store']);
+    Route::put('admin/banners/{id}', [BannerController::class, 'update']);
+    Route::delete('admin/banners/{id}', [BannerController::class, 'destroy']);
 });

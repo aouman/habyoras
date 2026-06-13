@@ -4,6 +4,7 @@ import { SlidersHorizontal, X, Search } from 'lucide-react';
 import PageShell from '@/components/PageShell';
 import PropertyCard from '@/components/PropertyCard';
 import SimplePagination from '@/components/SimplePagination';
+import BannerAd from '@/components/BannerAd';
 import { getProperties } from '@/services/properties';
 import type { Property, PaginatedResponse } from '@/services/types';
 
@@ -129,6 +130,9 @@ const ListingsPage: React.FC = () => {
             <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-slate-100 dark:border-slate-700 shadow-sm sticky top-24">
               <h3 className="font-bold text-slate-900 dark:text-white mb-5 flex items-center gap-2"><SlidersHorizontal className="w-5 h-5 text-orange-500" /> Filtres</h3>
               {Filters}
+              <div className="mt-5 pt-5 border-t border-slate-100 dark:border-slate-700">
+                <BannerAd position="sidebar_vertical" />
+              </div>
             </div>
           </aside>
 
