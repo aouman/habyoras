@@ -25,7 +25,7 @@ Route::post('auth/agency/register', [AuthController::class, 'registerAgency']);
 Route::post('auth/agency/login', [AuthController::class, 'loginAgency']);
 Route::post('auth/admin/login', [AuthController::class, 'loginAdmin']);
 
-Route::post('messages', [MessageController::class, 'store']);
+Route::post('contact', [\App\Http\Controllers\Api\ContactController::class, 'store']);
 Route::post('properties/{id}/report', [PropertyController::class, 'report']);
 
 Route::post('coupons/validate', [CouponController::class, 'validateCoupon']);

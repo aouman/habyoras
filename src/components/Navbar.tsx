@@ -8,7 +8,6 @@ const links = [
   { label: 'Accueil', to: '/' },
   { label: 'Vos logements', to: '/biens' },
   { label: 'Agences', to: '/agences' },
-  { label: 'Tarifs', to: '/tarifs' },
   { label: 'Contact', to: '/contact' },
 ];
 

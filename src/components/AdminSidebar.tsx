@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Building, Users, Home, CreditCard, Settings, LogOut, Megaphone, Image } from 'lucide-react';
+import { LayoutDashboard, Building, Users, Home, CreditCard, Settings, LogOut, Megaphone, Image, Tag } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 
 const items = [
@@ -11,6 +11,7 @@ const items = [
   { label: 'Abonnements', to: '/admin/abonnements', icon: CreditCard },
   { label: 'Notifications', to: '/admin/notifications', icon: Megaphone },
   { label: 'Bannières', to: '/admin/bannieres', icon: Image },
+  { label: 'Coupons', to: '/admin/coupons', icon: Tag },
   { label: 'Paramètres', to: '/admin/parametres', icon: Settings },
 ];
 

@@ -152,7 +152,7 @@ const AppLayout: React.FC = () => {
         <div className="rounded-3xl bg-gradient-to-r from-orange-500 to-orange-600 p-10 md:p-14 text-center text-white relative overflow-hidden">
           <h2 className="text-3xl md:text-4xl font-extrabold mb-3">Vous êtes une agence ?</h2>
           <p className="text-orange-50 max-w-xl mx-auto mb-6">Publiez vos biens sur Habyora et touchez des milliers d'acheteurs et locataires chaque jour.</p>
-          <Link to="/tarifs" className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full bg-white text-orange-600 font-bold hover:bg-orange-50 transition-colors">
+          <Link to="/contact" className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full bg-white text-orange-600 font-bold hover:bg-orange-50 transition-colors">
             Découvrir nos offres <ArrowRight className="w-5 h-5" />
           </Link>
         </div>
