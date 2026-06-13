@@ -30,4 +30,13 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'geniuspay' => [
+        'public_key' => env('GENIUSPAY_PUBLIC_KEY'),
+        'secret_key' => env('GENIUSPAY_SECRET_KEY'),
+        'webhook_secret' => env('GENIUSPAY_WEBHOOK_SECRET'),
+        'base_url' => env('GENIUSPAY_BASE_URL', 'https://pay.genius.ci/api/v1/merchant'),
+        'checkout_success_url' => env('GENIUSPAY_SUCCESS_URL', env('APP_URL') . '/paiement/succes'),
+        'checkout_error_url' => env('GENIUSPAY_ERROR_URL', env('APP_URL') . '/paiement/echec'),
+    ],
+
 ];

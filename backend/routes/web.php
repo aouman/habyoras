@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::post('webhooks/geniuspay', [\App\Http\Controllers\Api\WebhookController::class, 'handleGeniusPay']);
+
 Route::get('/{any?}', function () {
     return file_get_contents(public_path('dist/index.html'));
 })->where('any', '.*');

@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\PaymentController;
 use App\Http\Controllers\Api\AdminController;
 use App\Http\Controllers\Api\CollaboratorController;
 use App\Http\Controllers\Api\BannerController;
+use App\Http\Controllers\Api\CouponController;
 
 // === Public routes ===
 Route::get('properties', [PropertyController::class, 'index']);
@@ -27,6 +28,7 @@ Route::post('auth/admin/login', [AuthController::class, 'loginAdmin']);
 Route::post('messages', [MessageController::class, 'store']);
 Route::post('properties/{id}/report', [PropertyController::class, 'report']);
 
+Route::post('coupons/validate', [CouponController::class, 'validateCoupon']);
 Route::post('auth/collaborator/register', [CollaboratorController::class, 'register']);
 Route::post('auth/collaborator/login', [CollaboratorController::class, 'login']);
 
@@ -49,7 +51,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('auth/change-password', [AuthController::class, 'changePassword']);
     Route::get('my/stats', [PropertyController::class, 'myStats']);
     Route::post('payment/init', [PaymentController::class, 'initPayment']);
-    Route::post('payment/{id}/confirm', [PaymentController::class, 'confirmPayment']);
     Route::get('payment/history', [PaymentController::class, 'history']);
 
     Route::get('my/collaborators', [CollaboratorController::class, 'index']);
@@ -86,4 +87,9 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
     Route::post('admin/banners', [BannerController::class, 'store']);
     Route::put('admin/banners/{id}', [BannerController::class, 'update']);
     Route::delete('admin/banners/{id}', [BannerController::class, 'destroy']);
+
+    Route::get('admin/coupons', [CouponController::class, 'adminIndex']);
+    Route::post('admin/coupons', [CouponController::class, 'store']);
+    Route::put('admin/coupons/{id}', [CouponController::class, 'update']);
+    Route::delete('admin/coupons/{id}', [CouponController::class, 'destroy']);
 });

@@ -8,11 +8,8 @@ class Payment extends Model
 {
     protected $fillable = [
         'agency_id', 'plan', 'amount', 'currency', 'method',
-        'mobile_operator', 'phone', 'transaction_id', 'status',
-    ];
-
-    protected $casts = [
-        'status' => 'string',
+        'mobile_operator', 'phone', 'transaction_id', 'geniuspay_reference',
+        'coupon_id', 'status',
     ];
 
     public function agency()

@@ -3,9 +3,10 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Coupon;
 use App\Models\Payment;
-use App\Models\Subscription;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 
 class PaymentController extends Controller
@@ -14,62 +15,90 @@ class PaymentController extends Controller
     {
         $validated = $request->validate([
             'plan' => 'required|in:Premium,Gold',
-            'method' => 'required|in:card,mobile_money',
-            'mobile_operator' => 'required_if:method,mobile_money|in:MTN,Orange,Moov,Wave|nullable',
-            'phone' => 'required_if:method,mobile_money|string|nullable',
-            'card_number' => 'required_if:method,card|nullable|string',
-            'card_expiry' => 'required_if:method,card|nullable|string',
-            'card_cvv' => 'required_if:method,card|nullable|string',
+            'coupon_code' => 'nullable|string|max:50',
         ]);
 
-        $prices = ['Premium' => '50 000', 'Gold' => '120 000'];
-        $amount = $prices[$validated['plan']] ?? '0';
+        $prices = ['Premium' => 50000, 'Gold' => 120000];
+        $amount = $prices[$validated['plan']] ?? 0;
+        $couponId = null;
+        $discountLabel = null;
 
-        $payment = Payment::create([
-            'agency_id' => $request->user()->id,
-            'plan' => $validated['plan'],
+        if ($validated['coupon_code'] ?? null) {
+            $coupon = Coupon::where('code', $validated['coupon_code'])->first();
+
+            if (!$coupon || !$coupon->isValid() || !$coupon->appliesToPlan($validated['plan'])) {
+                return response()->json(['message' => 'Code promo invalide ou inapplicable.'], 422);
+            }
+
+            $amount = $coupon->applyDiscount($amount);
+            $couponId = $coupon->id;
+            $discountLabel = $coupon->discount_percent
+                ? "-{$coupon->discount_percent}%"
+                : '-' . number_format($coupon->discount_amount, 0, '', ' ') . ' XOF';
+        }
+
+        $apiKey = config('services.geniuspay.public_key');
+        $apiSecret = config('services.geniuspay.secret_key');
+        $baseUrl = config('services.geniuspay.base_url');
+        $successUrl = config('services.geniuspay.checkout_success_url');
+        $errorUrl = config('services.geniuspay.checkout_error_url');
+
+        $agency = $request->user();
+        $transactionId = 'TXN-' . strtoupper(Str::random(12));
+
+        $response = Http::withHeaders([
+            'X-API-Key' => $apiKey,
+            'X-API-Secret' => $apiSecret,
+            'Content-Type' => 'application/json',
+        ])->post($baseUrl . '/payments', [
             'amount' => $amount,
             'currency' => 'XOF',
-            'method' => $validated['method'],
-            'mobile_operator' => $validated['mobile_operator'] ?? null,
-            'phone' => $validated['phone'] ?? null,
-            'transaction_id' => 'TXN-' . strtoupper(Str::random(12)),
+            'description' => 'Abonnement ' . $validated['plan'] . ' - ' . $agency->name,
+            'customer' => [
+                'name' => $agency->name,
+                'email' => $agency->email,
+                'phone' => $agency->phone_call,
+            ],
+            'success_url' => $successUrl . '?reference={reference}&plan=' . $validated['plan'],
+            'error_url' => $errorUrl,
+            'metadata' => [
+                'agency_id' => (string) $agency->id,
+                'plan' => $validated['plan'],
+                'transaction_id' => $transactionId,
+            ],
+        ]);
+
+        if (!$response->successful()) {
+            return response()->json([
+                'message' => 'Erreur de paiement. Veuillez réessayer.',
+                'error' => $response->json(),
+            ], 502);
+        }
+
+        $data = $response->json('data');
+
+        $payment = Payment::create([
+            'agency_id' => $agency->id,
+            'plan' => $validated['plan'],
+            'amount' => number_format($amount, 0, '', ' '),
+            'currency' => 'XOF',
+            'method' => 'geniuspay_checkout',
+            'transaction_id' => $transactionId,
+            'geniuspay_reference' => $data['reference'],
             'status' => 'pending',
         ]);
 
-        return response()->json([
-            'payment' => $payment,
-            'message' => 'Paiement initié. Veuillez confirmer le paiement.',
-        ]);
-    }
-
-    public function confirmPayment(Request $request, $id)
-    {
-        $payment = Payment::where('id', $id)->where('agency_id', $request->user()->id)->firstOrFail();
-
-        if ($payment->status !== 'pending') {
-            return response()->json(['message' => 'Ce paiement a déjà été traité.'], 400);
+        if ($couponId) {
+            $payment->update(['coupon_id' => $couponId]);
+            Coupon::where('id', $couponId)->increment('used_count');
         }
 
-        $payment->update(['status' => 'completed']);
-
-        $prices = ['Premium' => '50 000 FCFA/an', 'Gold' => '120 000 FCFA/an'];
-        $features = SubscriptionController::planFeatures($payment->plan);
-
-        Subscription::updateOrCreate(
-            ['agency_id' => $request->user()->id],
-            array_merge([
-                'plan' => $payment->plan,
-                'amount' => $prices[$payment->plan] ?? '0 FCFA',
-                'start_date' => now(),
-                'end_date' => now()->addYear(),
-                'status' => 'active',
-            ], $features)
-        );
-
         return response()->json([
-            'message' => 'Paiement confirmé. Votre abonnement ' . $payment->plan . ' est actif.',
-            'payment' => $payment->fresh(),
+            'checkout_url' => $data['checkout_url'] ?? $data['payment_url'],
+            'reference' => $data['reference'],
+            'discounted_amount' => $amount,
+            'discount_label' => $discountLabel,
+            'message' => 'Redirection vers la page de paiement sécurisée...',
         ]);
     }
 
